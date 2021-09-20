@@ -21,3 +21,11 @@ export type BuildOptions<T, I> = {
   associations?: Partial<T>;
   transient?: Partial<I>;
 };
+
+export type Diff<TBase extends {}, TExtended extends TBase> = {
+  [Key in keyof TExtended as Key extends keyof TBase
+    ? TBase[Key] extends TExtended[Key]
+      ? never
+      : Key
+    : Key]: TExtended[Key];
+};
