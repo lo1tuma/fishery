@@ -5,6 +5,7 @@ import {
   GeneratorFnOptions,
   HookFn,
   CreateFn,
+  Diff,
 } from './types';
 import { FactoryBuilder } from './builder';
 import { merge, mergeCustomizer } from './merge';
@@ -139,6 +140,17 @@ export class Factory<T, I = any> {
     const factory = this.clone();
     factory._transient = { ...this._transient, ...transient };
     return factory;
+  }
+
+  extend<TExtended extends T>(
+    generator: GeneratorFn<Partial<T> & Diff<T, TExtended>, I>,
+  ): Factory<TExtended, I> {
+    return new Factory<TExtended, I>(options => {
+      return {
+        ...this.build(),
+        ...generator(options),
+      };
+    });
   }
 
   /**
